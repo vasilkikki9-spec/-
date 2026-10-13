@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Αποστολή: Στρογγυλοποίηση</title>
+<style>
+  :root {
+    --blue: #2457a7;
+    --light: #eef5ff;
+    --green: #247447;
+    --red: #a83d3d;
+    --ink: #253247;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  main {
+    width: min(760px, 94%);
+    margin: 24px auto;
+    background: white;
+    border-radius: 18px;
+    padding: 26px;
+    box-shadow: 0 5px 22px #243a5915;
+  }
+  h1 { color: var(--blue); margin: 0 0 6px; }
+  h2 { font-size: 1.2rem; margin-top: 22px; }
+  .intro { color: #526176; }
+  .progress {
+    height: 9px;
+    background: #e4eaf3;
+    border-radius: 9px;
+    overflow: hidden;
+    margin: 18px 0;
+  }
+  #bar {
+    height: 100%;
+    width: 0%;
+    background: #38865b;
+    transition: width .25s;
+  }
+  .mission {
+    background: var(--light);
+    border-radius: 14px;
+    padding: 18px;
+    margin: 14px 0;
+  }
+  .number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: 5px;
+    text-align: center;
+    margin: 14px 0;
+  }
+  .digit {
+    display: inline-block;
+    padding: 0 5px;
+    border-radius: 7px;
+  }
+  .target {
+    background: #ffe5a1;
+    color: #593e00;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+  }
+  .choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+  }
+  button {
+    font: inherit;
+    cursor: pointer;
+    border: 2px solid #d4deec;
+    border-radius: 10px;
+    padding: 12px;
+    background: white;
+    color: var(--ink);
+  }
+  button:hover { border-color: var(--blue); background: #f4f8ff; }
+  button:focus-visible { outline: 3px solid #f1bf49; outline-offset: 2px; }
+  .primary {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+  }
+  .primary:hover { background: #173f80; color: white; }
+  .helper {
+    border-left: 4px solid #e5b13c;
+    background: #fff8e6;
+    padding: 12px;
+    margin: 14px 0;
+    border-radius: 5px;
+  }
+  .feedback {
+    padding: 13px;
+    border-radius: 10px;
+    margin: 14px 0;
+    font-weight: 600;
+  }
+  .good { background: #e7f6ec; color: #1e653b; }
+  .try { background: #fff1e8; color: #8a3e20; }
+  .muted { color: #5d6b7e; font-size: .94rem; }
+  .hidden { display: none; }
+  .reflection button { text-align: left; }
+  footer { margin-top: 20px; color: #657187; font-size: .85rem; }
+  @media (max-width: 480px) {
+    main { padding: 17px; }
+    .number { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>🔎 Αποστολή: Στρογγυλοποίηση</h1>
+  <p class="intro">
+    Εσύ είσαι ο ντετέκτιβ των ψηφίων! Παρατήρησε, σκέψου,
+    δοκίμασε και διόρθωσε την απάντησή σου.
+    Μπορείς να ζητήσεις βοήθεια όποτε τη χρειαστείς.
+  </p>
+
+  <div class="progress" aria-label="Πρόοδος αποστολής">
+    <div id="bar"></div>
+  </div>
+  <p id="counter" class="muted"></p>
+
+  <section id="activity">
+    <div class="mission">
+      <p id="taskLabel"></p>
+      <div id="number" class="number" aria-label="Αριθμός προς στρογγυλοποίηση"></div>
+      <p id="instruction"></p>
+    </div>
+
+    <h2 id="question"></h2>
+    <div id="choices" class="choices"></div>
+
+    <div id="feedback" class="feedback hidden" role="status" aria-live="polite"></div>
+    <div id="hint" class="helper hidden"></div>
+
+    <div class="choices">
+      <button id="hintButton" type="button">💡 Θέλω μια υπόδειξη</button>
+      <button id="nextButton" class="primary hidden" type="button">Επόμενο βήμα →</button>
+    </div>
+  </section>
+
+  <section id="finish" class="hidden">
+    <div class="mission">
+      <h2>🎉 Ολοκλήρωσες την αποστολή!</h2>
+      <p>Πριν τελειώσεις, σκέψου πώς εργάστηκες.</p>
+    </div>
+    <h2>Πώς τα πήγες;</h2>
+    <div class="choices reflection">
+      <button data-reflection="easy">😊 Μπορώ να το κάνω μόνος/η μου.</button>
+      <button data-reflection="practice">🤔 Καταλαβαίνω, αλλά χρειάζομαι λίγη εξάσκηση.</button>
+      <button data-reflection="help">🧩 Χρειάζομαι ακόμη βοήθεια.</button>
+    </div>
+    <div id="reflectionResult" class="feedback hidden" role="status"></div>
+    <button id="restart" class="primary" type="button">🔁 Νέα προσπάθεια</button>
+  </section>
+
+  <footer>
+    Θυμήσου: πρώτα εντοπίζω το ψηφίο που εξετάζω,
+    μετά αποφασίζω τι συμβαίνει στο ψηφίο της θέσης
+    στην οποία στρογγυλοποιώ.
+  </footer>
+</main>
+
+<script>
+const tasks = [
+  {
+    number: "478",
+    place: "δεκάδες",
+    target: 1,
+    check: 2,
+    checkName: "μονάδων",
+    targetName: "δεκάδων",
+    checkAnswer: "8",
+    changeAnswer: "Αυξάνεται κατά 1",
+    result: "480",
+    hints: [
+      "Στρογγυλοποιούμε στις δεκάδες. Κοίτα αμέσως δεξιά από το ψηφίο των δεκάδων.",
+      "Το ψηφίο των δεκάδων είναι το 7. Ποιο ψηφίο βρίσκεται ακριβώς δεξιά του;"
+    ]
+  },
+  {
+    number: "342",
+    place: "εκατοντάδες",
+    target: 0,
+    check: 1,
+    checkName: "δεκάδων",
+    targetName: "εκατοντάδων",
+    checkAnswer: "4",
+    changeAnswer: "Μένει ίδιο",
+    result: "300",
+    hints: [
+      "Στρογγυλοποιούμε στις εκατοντάδες. Εξέτασε το ψηφίο που βρίσκεται αμέσως δεξιά από τις εκατοντάδες.",
+      "Το ψηφίο των εκατοντάδων είναι το 3. Το αμέσως επόμενο ψηφίο είναι το 4."
+    ]
+  },
+  {
+    number: "268",
+    place: "δεκάδες",
+    target: 1,
+    check: 2,
+    checkName: "μονάδων",
+    targetName: "δεκάδων",
+    checkAnswer: "8",
+    changeAnswer: "Αυξάνεται κατά 1",
+    result: "270",
+    hints: [
+      "Βρες πρώτα το ψηφίο των δεκάδων. Έπειτα κοίτα το ψηφίο ακριβώς δεξιά του.",
+      "Το 6 είναι στις δεκάδες. Ποιο ψηφίο βρίσκεται ακριβώς δεξιά από το 6;"
+    ]
+  },
+  {
+    number: "273",
+    place: "δεκάδες",
+    target: 1,
+    check: 2,
+    checkName: "μονάδων",
+    targetName: "δεκάδων",
+    checkAnswer: "3",
+    changeAnswer: "Μένει ίδιο",
+    result: "270",
+    hints: [
+      "Μην κοιτάξεις όλα τα ψηφία μαζί. Εντόπισε πρώτα το ψηφίο των δεκάδων και μετά το αμέσως επόμενο.",
+      "Το 7 βρίσκεται στις δεκάδες. Το ψηφίο των μονάδων είναι μικρότερο από 5."
+    ]
+  }
+];
+
+let taskIndex = 0;
+let stage = 0;
+let hintLevel = 0;
+let attempts = 0;
+
+const $ = id => document.getElementById(id);
+const stages = ["Εντοπίζω το ψηφίο", "Αποφασίζω τι αλλάζει", "Ελέγχω το αποτέλεσμα"];
+
+function renderNumber(task, highlight) {
+  return task.number.split("").map((digit, i) => {
+    const cls = i === highlight ? "digit target" : "digit";
+    return `<span class="${cls}">${digit}</span>`;
+  }).join("");
+}
+
+function startTask() {
+  const task = tasks[taskIndex];
+  stage = 0;
+  hintLevel = 0;
+  attempts = 0;
+  $("feedback").className = "feedback hidden";
+  $("hint").className = "helper hidden";
+  $("hintButton").classList.remove("hidden");
+  $("nextButton").classList.add("hidden");
+  $("taskLabel").textContent = `Αποστολή ${taskIndex + 1} από ${tasks.length} · ${stages[stage]}`;
+  $("number").innerHTML = renderNumber(task, task.target);
+  $("instruction").textContent = `Στρογγυλοποίησε τον αριθμό ${task.number} στις ${task.place}.`;
+  $("counter").textContent = `Πρόοδος: ${taskIndex} από ${tasks.length} αποστολές ολοκληρωμένες`;
+  $("bar").style.width = `${taskIndex / tasks.length * 100}%`;
+  showStage();
+}
+
+function showStage() {
+  const task = tasks[taskIndex];
+  $("taskLabel").textContent = `Αποστολή ${taskIndex + 1} από ${tasks.length} · ${stages[stage]}`;
+  $("feedback").className = "feedback hidden";
+  $("hint").className = "helper hidden";
+  $("nextButton").classList.add("hidden");
+  $("hintButton").classList.remove("hidden");
+
+  if (stage === 0) {
+    $("number").innerHTML = renderNumber(task, task.target);
+    $("question").textContent = `Ποιο ψηφίο πρέπει να εξετάσω;`;
+    $("instruction").textContent = `Το υπογραμμισμένο ψηφίο δείχνει τη θέση στις ${task.place}.`;
+    const digits = [...new Set(task.number.split(""))];
+    makeChoices(digits.map(d => ({
+      label: `Το ${d}`,
+      value: d,
+      correct: d === task.checkAnswer
+    })));
+  } else if (stage === 1) {
+    $("number").innerHTML = renderNumber(task, task.target);
+    $("question").textContent = `Τι συμβαίνει στο ψηφίο των ${task.targetName};`;
+    $("instruction").textContent = `Το ψηφίο που εξετάζω είναι το ${task.checkAnswer}.`;
+    makeChoices([
+      {label: "Μένει ίδιο", value: "Μένει ίδιο", correct: task.changeAnswer === "Μένει ίδιο"},
+      {label: "Αυξάνεται κατά 1", value: "Αυξάνεται κατά 1", correct: task.changeAnswer === "Αυξάνεται κατά 1"}
+    ]);
+  } else {
+    $("number").innerHTML = renderNumber(task, task.target);
+    $("question").textContent = `Ποιο είναι το σωστό αποτέλεσμα;`;
+    $("instruction").textContent = `Θυμήσου: τα ψηφία δεξιά από τη θέση στρογγυλοποίησης γίνονται μηδενικά.`;
+    const options = [...new Set([
+      task.result,
+      task.number,
+      String(Number(task.result) + (task.place === "δεκάδες" ? 10 : 100)),
+      String(Number(task.result) - (task.place === "δεκάδες" ? 10 : 100))
+    ])].sort(() => Math.random() - 0.5);
+    makeChoices(options.map(v => ({
+      label: v,
+      value: v,
+      correct: v === task.result
+    })));
+  }
+}
+
+function makeChoices(items) {
+  const area = $("choices");
+  area.innerHTML = "";
+  items.forEach(item => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = item.label;
+    button.addEventListener("click", () => choose(item, button));
+    area.appendChild(button);
+  });
+}
+
+function choose(item, button) {
+  const task = tasks[taskIndex];
+  attempts++;
+  const all = [...$("choices").querySelectorAll("button")];
+  all.forEach(b => b.disabled = true);
+
+  if (item.correct) {
+    $("feedback").className = "feedback good";
+    $("feedback").textContent =
+      stage === 0 ? "Μπράβο! Εντόπισες το ψηφίο που εξετάζουμε." :
+      stage === 1 ? "Σωστά! Αποφάσισες τι συμβαίνει στο ψηφίο της θέσης." :
+      "Σωστά! Έλεγξες το αποτέλεσμα της στρογγυλοποίησης.";
+    $("nextButton").classList.remove("hidden");
+    $("hintButton").classList.add("hidden");
+    $("bar").style.width = `${(taskIndex + (stage + 1) / 3) / tasks.length * 100}%`;
+  } else {
+    $("feedback").className = "feedback try";
+    $("feedback").textContent =
+      "Δεν πειράζει. Μην αλλάξεις αμέσως απάντηση στην τύχη. Ξανακοίτα τη θέση που στρογγυλοποιείς και σκέψου ποιο ψηφίο βρίσκεται ακριβώς δεξιά της.";
+    all.forEach(b => b.disabled = false);
+    button.focus();
+  }
+}
+
+$("hintButton").addEventListener("click", () => {
+  const task = tasks[taskIndex];
+  const hint = task.hints[Math.min(hintLevel, task.hints.length - 1)];
+  $("hint").textContent = "💡 " + hint;
+  $("hint").className = "helper";
+  hintLevel++;
+});
+
+$("nextButton").addEventListener("click", () => {
+  if (stage < 2) {
+    stage++;
+    showStage();
+  } else {
+    taskIndex++;
+    if (taskIndex < tasks.length) {
+      startTask();
+    } else {
+      $("activity").classList.add("hidden");
+      $("finish").classList.remove("hidden");
+      $("bar").style.width = "100%";
+      $("counter").textContent = "Ολοκλήρωσες και τις 4 αποστολές!";
+    }
+  }
+});
+
+document.querySelectorAll("[data-reflection]").forEach(button => {
+  button.addEventListener("click", () => {
+    const messages = {
+      easy: "Ωραία! Δοκίμασε να εξηγήσεις σε έναν συμμαθητή σου τα τρία βήματα.",
+      practice: "Καλή παρατήρηση. Ξανακάνε τις αποστολές και χρησιμοποίησε τις υποδείξεις μόνο όταν χρειάζεται.",
+      help: "Είναι εντάξει να χρειάζεσαι βοήθεια. Ζήτησε να λύσετε μαζί ένα παράδειγμα και μετά δοκίμασε ξανά μόνος/η σου."
+    };
+    $("reflectionResult").textContent = messages[button.dataset.reflection];
+    $("reflectionResult").className = "feedback good";
+  });
+});
+
+$("restart").addEventListener("click", () => {
+  taskIndex = 0;
+  $("finish").classList.add("hidden");
+  $("activity").classList.remove("hidden");
+  startTask();
+});
+
+startTask();
+</script>
+</body>
+</html>
